@@ -7,8 +7,21 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Welcome to JHS Volunteering</h1>
+    <header>
+        <h1>Welcome to JHS Volunteering</h1>
+        <button onclick="document.getElementById('loginModal').showModal()">Admin Sign In</button>
+    
+    </header>
     <p>This is a simple Flask app for managing volunteering opportunities.</p>
+    <dialog id="loginModal">
+        <h2>Admin Sign In</h2>
+        <form action="/login" method="POST">
+            <input type="password" name="password"
+            placeholder="Admin Password" required>
+        <button class="btn" type="submit">Log In</button>
+        </form>
+        <button onclick="document.getElementById('loginModal').close()">Close</button>
+    </dialog>
     <div class="grid">
     {% for opp in opportunities %}
     <div class="card">

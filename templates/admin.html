@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <header>
+            <h1>Admin Dashboard</h1>
+            <a class="btn" href="/">Back to Home</a>
+            </header>
+        </header>
+        <form class="admin-form" action="/add" method="POST">
+            <h2>Create New Opportunity </h2>
+            <input type="text" name="title"
+            placeholder="Event Title" required>
+            <input type="text" name="date"
+            placeholder="Date (e.g. Oct 25)" required>
+            <input type="text" name="link"
+            placeholder="Sign Up Link" required>
+            <button class="btn" type="submit">Add opportunity</button>
+        </form>
+        {% for opp in opportunities %}
+        <div>
+            <span>{{ opp.title }}</span>
+            <form action="/delete/{{ opp.id }}" method="POST" style="display:inline;">
+                <input type="hidden" name="id" value="{{ opp.id }}">
+                <button class="btn" type="submit">Delete</button>
+            </form>
+            </div>
+            {% endfor %}
+        </span>
+        </div>
+    
+    </body>
