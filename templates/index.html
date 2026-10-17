@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JHS Volunteering</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Welcome to JHS Volunteering</h1>
+    <p>This is a simple Flask app for managing volunteering opportunities.</p>
+    <div class="grid">
+    {% for opp in opportunities %}
+    <div class="card">
+        <h3>{{ opp.title }} - {{ opp.date }}</h3>
+        <p><a href="{{ opp.link }}" target="_blank">Sign Up Link</a></p>
+    </div>
+    {% endfor %}
+    </div>
+</body>
+</html>
