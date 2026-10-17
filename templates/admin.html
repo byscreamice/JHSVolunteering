@@ -13,10 +13,10 @@
             <h2>Create New Opportunity </h2>
             <input type="text" name="title"
             placeholder="Event Title" required>
-            <input type="text" name="date"
-            placeholder="Date (e.g. Oct 25)" required>
+            <input type="date" name="date" min="{{ today }}" required>
             <input type="text" name="link"
             placeholder="Sign Up Link" required>
+            <textarea name="description" placeholder="Description" rows="3" required></textarea>
             <button class="btn" type="submit">Add opportunity</button>
         </form>
         {% for opp in opportunities %}

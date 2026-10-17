@@ -26,6 +26,7 @@
     {% for opp in opportunities %}
     <div class="card">
         <h3>{{ opp.title }} - {{ opp.date }}</h3>
+        <p>{{ opp.description }}</p>
         <p><a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a></p>
     </div>
     {% endfor %}
