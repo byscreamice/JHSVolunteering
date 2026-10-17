@@ -29,6 +29,8 @@
         <p>{{ opp.description }}</p>
         <p><a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a></p>
     </div>
+    {% else %}
+        <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #4b5563; padding: 40px 0;">No Volunteering Opportunities yet</p>
     {% endfor %}
     </div>
 </body>
