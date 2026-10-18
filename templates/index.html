@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JHS Volunteering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -16,13 +17,30 @@
     </header>
     <p>This is a simple Flask app for managing volunteering opportunities.</p>
     <dialog id="loginModal">
-        <h2>Admin Sign In</h2>
-        <form action="/login" method="POST">
-            <input type="password" name="password"
-            placeholder="Admin Password" required>
-        <button class="btn btn-elevated" type="submit">Log In</button>
-        </form>
-        <button onclick="document.getElementById('loginModal').close()">Close</button>
+        <div class="screen">
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('loginModal').close()" aria-label="Close">&times;</button>
+            <div class="screen__content">
+                <form class="login" action="/login" method="POST">
+                    <h2 class="login__title">Login to Admin Platform</h2>
+                    {% if request.args.get('error') == '1' %}
+                        <p class="login__error">Incorrect password. Try again.</p>
+                    {% elif request.args.get('error') == 'auth' %}
+                        <p class="login__error">Admin access required. Please sign in.</p>
+                    {% endif %}
+                    <div class="login__field">
+                        <i class="login__icon fas fa-lock"></i>
+                        <input type="password" name="password" class="login__input" placeholder="Password" required>
+                    </div>
+                    <button class="login__submit" type="submit">Enter</button>				
+                </form>
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>		
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>		
+        </div>
     </dialog>
     <div class="grid">
     {% for opp in opportunities %}
@@ -35,5 +53,13 @@
         <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #4b5563; padding: 40px 0;">No Volunteering Opportunities yet</p>
     {% endfor %}
     </div>
+    {% if request.args.get('error') %}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('loginModal');
+            if (modal) modal.showModal();
+        });
+    </script>
+    {% endif %}
 </body>
 </html>

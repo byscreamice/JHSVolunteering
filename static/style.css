@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
-
 body {
     font-family: sans-serif;
     background-color: #d0e8ff;
@@ -11,8 +9,8 @@ body {
 .card {
     background-color: rgb(239, 240, 245);
     padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(13, 13, 13, 0.412);
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .grid {
     display: grid;
@@ -26,18 +24,19 @@ body {
     padding: 10px 18px;
     font-weight: 600;
     font-size: 0.95rem;
+    font-family: sans-serif;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     text-decoration: none;
     display: inline-block;
-    transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 .btn:hover {
     background-color: #0056b3;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.4);
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 .btn-elevated {
     display: inline-flex;
@@ -49,10 +48,10 @@ body {
     min-width: 95px;
     height: 40px;
     background: #ffffff;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-    border-radius: 0px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    border-radius: 0;
     border: none;
-    font-family: 'Roboto', sans-serif;
+    font-family: sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 14px;
@@ -69,7 +68,7 @@ body {
     background-color: #EBF2FE;
     color: #0066cc;
     transform: none;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 header {
     display: flex;
@@ -77,26 +76,492 @@ header {
     align-items: center;
     background-color: #eef0f3;
     padding: 16px 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
     position: sticky;
     top: 0;
     z-index: 100;
 }
+/* --- Admin Dashboard Layout --- */
+.admin-container {
+    max-width: 960px;
+    margin: 28px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    font-family: sans-serif;
+}
+
 .admin-form {
     background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: 24px auto;
+    padding: 24px;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: sans-serif;
+}
+
+.admin-form h2 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    color: #0f172a;
+}
+
+.admin-form input,
+.admin-form textarea {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #0f172a;
+    background: #f8fafc;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+}
+
+.admin-card {
+    background: #ffffff;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.admin-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-card-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.badge {
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 0;
+    border: 1px solid #bfdbfe;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.admin-table th {
+    background: #f8fafc;
+    padding: 12px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+    background: #fcfdfd;
+}
+
+.table-title {
+    font-size: 15px;
+    color: #0f172a;
+    display: block;
+}
+
+.table-desc {
+    font-size: 13px;
+    color: #64748b;
+    margin: 4px 0 0 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.date-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #eff6ff;
+    color: #1e40af;
+    padding: 4px 10px;
+    border-radius: 0;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+
+.table-link:hover {
+    text-decoration: underline;
+}
+
+.btn-edit {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    padding: 6px 12px;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-edit:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.btn-delete {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 6px 12px;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-delete:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+/* --- In-Editor Edit Modal Dialog --- */
+dialog.admin-modal {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-width: 520px;
+    width: 90%;
+    background: #ffffff;
+    text-align: left;
+}
+
+dialog.admin-modal::backdrop {
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.edit-modal-content {
+    padding: 24px;
+    font-family: sans-serif;
+}
+
+.edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.edit-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.close-x-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #64748b;
+    padding: 0;
+}
+
+.close-x-btn:hover {
+    color: #0f172a;
+}
+
+.edit-form {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
-.admin-form input {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    
+
+.edit-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.edit-form .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.edit-form .form-group input,
+.edit-form .form-group textarea {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: #0f172a;
+    background: #f8fafc;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.edit-form .form-group input:focus,
+.edit-form .form-group textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+}
+
+.edit-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.admin-empty-state {
+    padding: 48px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- Admin Login Modal (Abstract Blue Design) --- */
+dialog#loginModal {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    background: transparent;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+dialog#loginModal::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.screen {		
+    background: linear-gradient(90deg, #1d4ed8, #3b82f6);		
+    position: relative;	
+    height: 520px;
+    width: 360px;	
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.screen__content {
+    z-index: 1;
+    position: relative;	
+    height: 100%;
+}
+
+.screen__background {		
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0);	
+}
+
+.screen__background__shape {
+    transform: rotate(45deg);
+    position: absolute;
+}
+
+.screen__background__shape1 {
+    height: 520px;
+    width: 520px;
+    background: #FFFFFF;	
+    top: -50px;
+    right: 120px;	
+    border-radius: 0 72px 0 0;
+}
+
+.screen__background__shape2 {
+    height: 220px;
+    width: 220px;
+    background: #2563eb;	
+    top: -172px;
+    right: 0;	
+    border-radius: 32px;
+}
+
+.screen__background__shape3 {
+    height: 540px;
+    width: 190px;
+    background: linear-gradient(270deg, #1e40af, #2563eb);
+    top: -24px;
+    right: 0;	
+    border-radius: 32px;
+}
+
+.screen__background__shape4 {
+    height: 400px;
+    width: 200px;
+    background: #60a5fa;	
+    top: 420px;
+    right: 50px;	
+    border-radius: 60px;
+}
+
+.login {
+    width: 320px;
+    padding: 30px;
+    padding-top: 130px;
+    font-family: sans-serif;
+}
+
+.login__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 16px;
+    line-height: 1.3;
+    font-family: sans-serif;
+}
+
+.login__error {
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-family: sans-serif;
+}
+
+.login__field {
+    padding: 16px 0px;	
+    position: relative;	
+}
+
+.login__icon {
+    position: absolute;
+    top: 26px;
+    color: #3b82f6;
+    font-size: 16px;
+}
+
+.login__input {
+    border: none;
+    border-bottom: 2px solid #D1D1D4;
+    background: none;
+    padding: 10px 10px 10px 28px;
+    font-weight: 600;
+    font-family: sans-serif;
+    width: 100%;
+    transition: border-color .2s;
+    color: #1e3a8a;
+    font-size: 14px;
+}
+
+.login__input:active,
+.login__input:focus,
+.login__input:hover {
+    outline: none;
+    border-bottom-color: #2563eb;
+}
+
+.login__submit {
+    background: #ffffff;
+    font-size: 14px;
+    margin-top: 24px;
+    padding: 14px 20px;
+    border-radius: 0;
+    border: 1px solid #bfdbfe;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: #1d4ed8;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s;
+}
+
+.login__submit:hover,
+.login__submit:focus {
+    border-color: #2563eb;
+    background: #f0f7ff;
+    color: #1e40af;
+    outline: none;
 }

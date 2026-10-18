@@ -1,34 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <title>Admin Dashboard</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - JHS Volunteering</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
-    </head>
-    <body>
-        <header>
-            <h1>Admin Dashboard</h1>
-            <a class="btn" href="/">Back to Home</a>
-            </header>
-        </header>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <a class="btn" href="/">Return Home</a>
+    </header>
+
+    <main class="admin-container">
+        <!-- Reverted simple Create Form -->
         <form class="admin-form" action="/add" method="POST">
-            <h2>Create New Opportunity </h2>
-            <input type="text" name="title"
-            placeholder="Event Title" required>
+            <h2>Create New Opportunity</h2>
+            <input type="text" name="title" placeholder="Event Title" required>
             <input type="date" name="date" min="{{ today }}" required>
-            <input type="text" name="link"
-            placeholder="Sign Up Link" required>
+            <input type="text" name="link" placeholder="Sign Up Link" required>
             <textarea name="description" placeholder="Description" rows="3" required></textarea>
             <button class="btn" type="submit">Add opportunity</button>
         </form>
-        {% for opp in opportunities %}
-        <div>
-            <span>{{ opp.title }}</span>
-            <form action="/delete/{{ opp.id }}" method="POST" style="display:inline;">
-                <input type="hidden" name="id" value="{{ opp.id }}">
-                <button class="btn" type="submit">Delete</button>
-            </form>
+
+        <!-- Kept Opportunities Table UI with In-Editor Editing -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-list-ul" style="color: #2563eb; margin-right: 8px;"></i>Current Opportunities</h2>
             </div>
-            {% endfor %}
-        </span>
+
+            {% if opportunities %}
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Opportunity</th>
+                            <th>Date</th>
+                            <th>External Link</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for opp in opportunities %}
+                        <tr>
+                            <td>
+                                <strong class="table-title">{{ opp.title }}</strong>
+                                {% if opp.description %}
+                                <p class="table-desc">{{ opp.description }}</p>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="date-badge">{{ opp.date }}</span>
+                            </td>
+                            <td>
+                                <a class="table-link" href="{{ opp.link }}" target="_blank" rel="noopener noreferrer">
+                                    Visit Link <i class="fas fa-external-link-alt" style="font-size: 11px; margin-left: 2px;"></i>
+                                </a>
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: flex; justify-content: flex-end; align-items: center; gap: 6px;">
+                                    <button type="button" class="btn-edit" onclick="document.getElementById('editModal-{{ opp.id }}').showModal()" title="Edit Opportunity">Edit</button>
+                                    <form action="/delete/{{ opp.id }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this opportunity?');">
+                                        <button class="btn-delete" type="submit" title="Delete Opportunity">Delete</button>
+                                    </form>
+                                </div>
+
+                                <!-- In-Editor Edit Modal -->
+                                <dialog id="editModal-{{ opp.id }}" class="admin-modal">
+                                    <div class="edit-modal-content">
+                                        <div class="edit-modal-header">
+                                            <h3>Edit Opportunity</h3>
+                                            <button type="button" class="close-x-btn" onclick="document.getElementById('editModal-{{ opp.id }}').close()">&times;</button>
+                                        </div>
+                                        <form action="/edit/{{ opp.id }}" method="POST" class="edit-form">
+                                            <div class="form-group">
+                                                <label>Event Title</label>
+                                                <input type="text" name="title" value="{{ opp.title }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Event Date</label>
+                                                <input type="date" name="date" value="{{ opp.date }}" min="{{ today }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Sign Up Link</label>
+                                                <input type="url" name="link" value="{{ opp.link }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <textarea name="description" rows="3" required>{{ opp.description }}</textarea>
+                                            </div>
+                                            <div class="edit-modal-actions">
+                                                <button type="button" class="btn" style="background-color: #94a3b8;" onclick="document.getElementById('editModal-{{ opp.id }}').close()">Cancel</button>
+                                                <button type="submit" class="btn">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </dialog>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-empty-state">
+                <i class="far fa-folder-open" style="font-size: 40px; color: #94a3b8; margin-bottom: 12px;"></i>
+                <p style="font-weight: 600; color: #334155; margin-bottom: 4px;">No opportunities posted yet</p>
+                <p style="color: #64748b; font-size: 14px; margin: 0;">Use the form above to post your first volunteering opportunity for students.</p>
+            </div>
+            {% endif %}
         </div>
-    
-    </body>
+    </main>
+</body>
+</html>
