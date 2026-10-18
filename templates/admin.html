@@ -14,7 +14,6 @@
     </header>
 
     <main class="admin-container">
-        <!-- Reverted simple Create Form -->
         <form class="admin-form" action="/add" method="POST">
             <h2>Create a new opportunity</h2>
             <input type="text" name="title" placeholder="Event Title" required>
@@ -24,7 +23,6 @@
             <button class="btn" type="submit">Add opportunity</button>
         </form>
 
-        <!-- Kept Opportunities Table UI with In-Editor Editing -->
         <div class="admin-card">
             <div class="admin-card-header">
                 <h2><i class="fas fa-list-ul" style="color: #2563eb; margin-right: 8px;"></i>Current Opportunities</h2>
@@ -66,7 +64,6 @@
                                     </form>
                                 </div>
 
-                                <!-- In-Editor Edit Modal -->
                                 <dialog id="editModal-{{ opp.id }}" class="admin-modal">
                                     <div class="edit-modal-content">
                                         <div class="edit-modal-header">

@@ -81,7 +81,7 @@ header {
     top: 0;
     z-index: 100;
 }
-/* --- Admin Dashboard Layout --- */
+
 .admin-container {
     max-width: 960px;
     margin: 28px auto;
@@ -273,7 +273,6 @@ header {
     border-color: #fca5a5;
 }
 
-/* --- In-Editor Edit Modal Dialog --- */
 dialog.admin-modal {
     border: none;
     border-radius: 0;
@@ -374,7 +373,6 @@ dialog.admin-modal::backdrop {
     align-items: center;
 }
 
-/* --- Admin Login Modal (Abstract Blue Design) --- */
 dialog#loginModal {
     border: none;
     border-radius: 0;

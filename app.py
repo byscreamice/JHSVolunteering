@@ -8,7 +8,6 @@ app.secret_key = "jhs_volunteering_secret_key"
 def home():
    conn = sqlite3.connect("database.db")
    conn.row_factory = sqlite3.Row
-   # Automatically remove opportunities whose date has passed
    conn.execute("DELETE FROM opportunities WHERE date < date('now')")
    conn.commit()
    opportunities = conn.execute("SELECT * FROM opportunities").fetchall()
