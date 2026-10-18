@@ -16,7 +16,7 @@
     <main class="admin-container">
         <!-- Reverted simple Create Form -->
         <form class="admin-form" action="/add" method="POST">
-            <h2>Create New Opportunity</h2>
+            <h2>Create a new opportunity</h2>
             <input type="text" name="title" placeholder="Event Title" required>
             <input type="date" name="date" min="{{ today }}" required>
             <input type="text" name="link" placeholder="Sign Up Link" required>
@@ -106,8 +106,7 @@
             {% else %}
             <div class="admin-empty-state">
                 <i class="far fa-folder-open" style="font-size: 40px; color: #94a3b8; margin-bottom: 12px;"></i>
-                <p style="font-weight: 600; color: #334155; margin-bottom: 4px;">No opportunities posted yet</p>
-                <p style="color: #64748b; font-size: 14px; margin: 0;">Use the form above to post your first volunteering opportunity for students.</p>
+                <p style="color: #64748b; font-size: 14px; margin: 0;">Fill out the form above to post your first opportunity for students.</p>
             </div>
             {% endif %}
         </div>
