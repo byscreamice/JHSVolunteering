@@ -46,13 +46,28 @@
     {% for opp in opportunities %}
     <div class="card">
         <h3>{{ opp.title }} - {{ opp.date }}</h3>
-        <p>{{ opp.description }}</p>
-        <p><a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a></p>
+        <p id="desc-{{ opp.id }}" style="display: none; margin: 12px 0;">{{ opp.description }}</p>
+        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+            <button class="btn" type="button" onclick="toggleDescription('desc-{{ opp.id }}', this)">View Description</button>
+            <a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a>
+        </div>
     </div>
     {% else %}
         <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #4b5563; padding: 40px 0;">No Volunteering Opportunities yet</p>
     {% endfor %}
     </div>
+    <script>
+        function toggleDescription(id, btn) {
+            const el = document.getElementById(id);
+            if (el.style.display === 'none') {
+                el.style.display = 'block';
+                btn.textContent = 'Hide Description';
+            } else {
+                el.style.display = 'none';
+                btn.textContent = 'View Description';
+            }
+        }
+    </script>
     {% if request.args.get('error') %}
     <script>
         window.addEventListener('DOMContentLoaded', () => {
