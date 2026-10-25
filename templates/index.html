@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JHS Volunteering</title>
+    <title>Goldfinch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <header>
-        <h1>Welcome to JHS Volunteering</h1>
+        <div class="header-brand">
+            <img src="/static/goldfinch_logo.png" alt="Goldfinch Logo" class="header-logo">
+            <h1>Goldfinch</h1>
+        </div>
         <button class="btn btn-elevated" onclick="document.getElementById('loginModal').showModal()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0088FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <span>Admin Sign In</span>
         </button>
     </header>
@@ -21,7 +27,7 @@
             <button type="button" class="modal-close-btn" onclick="document.getElementById('loginModal').close()" aria-label="Close">&times;</button>
             <div class="screen__content">
                 <form class="login" action="/login" method="POST">
-                    <h2 class="login__title">Login to Admin Platform</h2>
+                    <h2 class="login__title">Login to Admin Dashboard</h2>
                     {% if request.args.get('error') == '1' %}
                         <p class="login__error">Incorrect password. Try again.</p>
                     {% elif request.args.get('error') == 'auth' %}
@@ -53,7 +59,7 @@
         </div>
     </div>
     {% else %}
-        <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #4b5563; padding: 40px 0;">No Volunteering Opportunities yet</p>
+        <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #656E77; padding: 40px 0;">No Volunteering Opportunities yet</p>
     {% endfor %}
     </div>
     <script>

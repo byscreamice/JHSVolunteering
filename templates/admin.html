@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - JHS Volunteering</title>
+    <title>Admin Dashboard - Goldfinch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <header>
-        <h1>Admin Dashboard</h1>
+        <div class="header-brand">
+            <img src="/static/goldfinch_logo.png" alt="Goldfinch Logo" class="header-logo">
+            <h1>Admin Dashboard</h1>
+        </div>
         <a class="btn" href="/">Return Home</a>
     </header>
 
@@ -25,7 +31,7 @@
 
         <div class="admin-card">
             <div class="admin-card-header">
-                <h2><i class="fas fa-list-ul" style="color: #2563eb; margin-right: 8px;"></i>Current Opportunities</h2>
+                <h2><i class="fas fa-list-ul" style="color: #656E77; margin-right: 8px;"></i>Current Opportunities</h2>
             </div>
 
             {% if opportunities %}
@@ -88,7 +94,7 @@
                                                 <textarea name="description" rows="3" required>{{ opp.description }}</textarea>
                                             </div>
                                             <div class="edit-modal-actions">
-                                                <button type="button" class="btn" style="background-color: #94a3b8;" onclick="document.getElementById('editModal-{{ opp.id }}').close()">Cancel</button>
+                                                <button type="button" class="btn" style="background-color: #656E77; color: #FFFFFF;" onclick="document.getElementById('editModal-{{ opp.id }}').close()">Cancel</button>
                                                 <button type="submit" class="btn">Save Changes</button>
                                             </div>
                                         </form>
@@ -102,8 +108,8 @@
             </div>
             {% else %}
             <div class="admin-empty-state">
-                <i class="far fa-folder-open" style="font-size: 40px; color: #94a3b8; margin-bottom: 12px;"></i>
-                <p style="color: #64748b; font-size: 14px; margin: 0;">Fill out the form above to post your first opportunity for students.</p>
+                <i class="far fa-folder-open" style="font-size: 40px; color: #656E77; margin-bottom: 12px;"></i>
+                <p style="color: #656E77; font-size: 14px; margin: 0;">Fill out the form above to post your first opportunity for students.</p>
             </div>
             {% endif %}
         </div>
