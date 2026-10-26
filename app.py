@@ -1,3 +1,5 @@
+import io
+import base64
 import os
 import sqlite3
 from datetime import date
@@ -23,14 +25,70 @@ def init_db():
     conn = get_db()
     cur = conn.cursor()
     if DATABASE_URL:
-        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id SERIAL PRIMARY KEY, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id SERIAL PRIMARY KEY, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT)")
+        conn.commit()
+        try:
+            cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS image TEXT")
+            conn.commit()
+        except Exception:
+            conn.rollback()
     else:
-        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT)")
-    conn.commit()
+        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT)")
+        conn.commit()
+        try:
+            cur.execute("ALTER TABLE opportunities ADD COLUMN image TEXT")
+            conn.commit()
+        except Exception:
+            pass
     cur.close()
     conn.close()
 
 init_db()
+
+def format_date_str(val):
+    try:
+        d = date.fromisoformat(str(val))
+        day = d.day
+        if 11 <= day <= 13:
+            suffix = "th"
+        else:
+            suffix = {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        return f"{d.strftime('%B')} {day}{suffix}, {d.year}"
+    except Exception:
+        return val
+
+@app.template_filter("format_date")
+def format_date_filter(val):
+    return format_date_str(val)
+
+def process_image(req):
+    file = req.files.get("image_file")
+    if file and file.filename:
+        try:
+            try:
+                from PIL import Image
+                img = Image.open(file.stream)
+                img.thumbnail((800, 800))
+                buf = io.BytesIO()
+                if img.mode in ("RGBA", "P"):
+                    img.save(buf, format="PNG", optimize=True)
+                    mime = "image/png"
+                else:
+                    img = img.convert("RGB")
+                    img.save(buf, format="JPEG", quality=85, optimize=True)
+                    mime = "image/jpeg"
+                b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+                return f"data:{mime};base64,{b64}"
+            except Exception:
+                file.stream.seek(0)
+                data = file.read()
+                if data:
+                    mime = file.content_type or "image/jpeg"
+                    b64 = base64.b64encode(data).decode("utf-8")
+                    return f"data:{mime};base64,{b64}"
+        except Exception:
+            pass
+    return ""
 
 def execute_db(query, params=(), fetch=False):
     conn = get_db()
@@ -77,15 +135,14 @@ def logout():
 def add(): 
     if not session.get("is_admin"):
         return redirect("/?error=auth")
-    title, date_val, link, description = (
-        request.form["title"],
-        request.form["date"],
-        request.form["link"],
-        request.form["description"]
-    )
+    title = request.form["title"]
+    date_val = request.form["date"]
+    link = request.form["link"]
+    description = request.form["description"]
+    image_data = process_image(request)
     execute_db(
-        "INSERT INTO opportunities (title, date, link, description) VALUES (?, ?, ?, ?)",
-        (title, date_val, link, description)
+        "INSERT INTO opportunities (title, date, link, description, image) VALUES (?, ?, ?, ?, ?)",
+        (title, date_val, link, description, image_data)
     )
     return redirect("/admin")
 
@@ -100,14 +157,25 @@ def delete(id):
 def edit(id):
     if not session.get("is_admin"):
         return redirect("/?error=auth")
-    title, date_val, link, description = (
-        request.form["title"],
-        request.form["date"],
-        request.form["link"],
-        request.form["description"]
-    )
+    title = request.form["title"]
+    date_val = request.form["date"]
+    link = request.form["link"]
+    description = request.form["description"]
+    
+    existing = execute_db("SELECT image FROM opportunities WHERE id = ?", (id,), fetch=True)
+    current_image = existing[0]["image"] if existing and existing[0]["image"] else ""
+
+    if request.form.get("remove_image") == "1":
+        image_data = ""
+    else:
+        file = request.files.get("image_file")
+        if file and file.filename:
+            image_data = process_image(request)
+        else:
+            image_data = current_image
+
     execute_db(
-        "UPDATE opportunities SET title = ?, date = ?, link = ?, description = ? WHERE id = ?",
-        (title, date_val, link, description, id)
+        "UPDATE opportunities SET title = ?, date = ?, link = ?, description = ?, image = ? WHERE id = ?",
+        (title, date_val, link, description, image_data, id)
     )
     return redirect("/admin")

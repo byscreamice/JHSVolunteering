@@ -51,11 +51,20 @@
     <div class="grid">
     {% for opp in opportunities %}
     <div class="card">
-        <h3>{{ opp.title }} - {{ opp.date }}</h3>
-        <p id="desc-{{ opp.id }}" style="display: none; margin: 12px 0;">{{ opp.description }}</p>
-        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-            <button class="btn" type="button" onclick="toggleDescription('desc-{{ opp.id }}', this)">View Description</button>
-            <a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a>
+        <div class="card-img-container">
+            {% if opp.image %}
+            <img src="{{ opp.image }}" alt="{{ opp.title }}" class="card-img" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
+            {% else %}
+            <img src="/static/placeholder.svg" alt="{{ opp.title }}" class="card-img card-img-placeholder">
+            {% endif %}
+        </div>
+        <div class="card-content">
+            <h3>{{ opp.title }} - {{ opp.date | format_date }}</h3>
+            <p id="desc-{{ opp.id }}" style="display: none; margin: 12px 0;">{{ opp.description }}</p>
+            <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 12px; flex-wrap: wrap;">
+                <button class="btn" type="button" onclick="toggleDescription('desc-{{ opp.id }}', this)">View Description</button>
+                <a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a>
+            </div>
         </div>
     </div>
     {% else %}

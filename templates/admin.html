@@ -20,12 +20,16 @@
     </header>
 
     <main class="admin-container">
-        <form class="admin-form" action="/add" method="POST">
+        <form class="admin-form" action="/add" method="POST" enctype="multipart/form-data">
             <h2>Create a new opportunity</h2>
             <input type="text" name="title" placeholder="Event Title" required>
             <input type="date" name="date" min="{{ today }}" required>
             <input type="text" name="link" placeholder="Sign Up Link" required>
             <textarea name="description" placeholder="Description" rows="3" required></textarea>
+            <div class="form-group">
+                <label>Card Image (Optional)</label>
+                <input type="file" name="image_file" accept="image/*">
+            </div>
             <button class="btn" type="submit">Add opportunity</button>
         </form>
 
@@ -49,13 +53,18 @@
                         {% for opp in opportunities %}
                         <tr>
                             <td>
-                                <strong class="table-title">{{ opp.title }}</strong>
-                                {% if opp.description %}
-                                <p class="table-desc">{{ opp.description }}</p>
-                                {% endif %}
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <img src="{{ opp.image if opp.image else '/static/placeholder.svg' }}" alt="" class="table-thumb" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
+                                    <div>
+                                        <strong class="table-title">{{ opp.title }}</strong>
+                                        {% if opp.description %}
+                                        <p class="table-desc">{{ opp.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </td>
                             <td>
-                                <span class="date-badge">{{ opp.date }}</span>
+                                <span class="date-badge">{{ opp.date | format_date }}</span>
                             </td>
                             <td>
                                 <a class="table-link" href="{{ opp.link }}" target="_blank" rel="noopener noreferrer">
@@ -76,7 +85,7 @@
                                             <h3>Edit Opportunity</h3>
                                             <button type="button" class="close-x-btn" onclick="document.getElementById('editModal-{{ opp.id }}').close()">&times;</button>
                                         </div>
-                                        <form action="/edit/{{ opp.id }}" method="POST" class="edit-form">
+                                        <form action="/edit/{{ opp.id }}" method="POST" enctype="multipart/form-data" class="edit-form">
                                             <div class="form-group">
                                                 <label>Event Title</label>
                                                 <input type="text" name="title" value="{{ opp.title }}" required>
@@ -92,6 +101,18 @@
                                             <div class="form-group">
                                                 <label>Description</label>
                                                 <textarea name="description" rows="3" required>{{ opp.description }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Card Image (Optional)</label>
+                                                {% if opp.image %}
+                                                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 6px;">
+                                                    <img src="{{ opp.image }}" alt="" class="table-thumb" onerror="this.onerror=null;this.src='/static/placeholder.svg';">
+                                                    <label style="font-size: 12px; font-weight: normal; color: var(--bark-gray); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                                                        <input type="checkbox" name="remove_image" value="1"> Remove current image (revert to placeholder)
+                                                    </label>
+                                                </div>
+                                                {% endif %}
+                                                <input type="file" name="image_file" accept="image/*">
                                             </div>
                                             <div class="edit-modal-actions">
                                                 <button type="button" class="btn" style="background-color: #656E77; color: #FFFFFF;" onclick="document.getElementById('editModal-{{ opp.id }}').close()">Cancel</button>
