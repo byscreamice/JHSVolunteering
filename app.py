@@ -167,6 +167,7 @@ def leave_space():
 @app.route("/admin")
 def admin():
     if not session.get("is_admin"):
+        session.pop("admin_space_id", None)
         return redirect("/?error=auth")
     execute_db("DELETE FROM opportunities WHERE date < ?", (str(date.today()),))
     admin_space_id = session.get("admin_space_id")
@@ -256,6 +257,7 @@ def delete_space(id):
 def login():
     if request.form.get("password") == "admin123":
         session["is_admin"] = True
+        session.pop("admin_space_id", None)
         return redirect("/admin")
     else:
         return redirect("/?error=1")

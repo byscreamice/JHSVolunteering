@@ -25,7 +25,7 @@
         </div>
         <div class="header-actions">
             <button type="button" class="btn" onclick="document.getElementById('createSpaceModal').showModal()">Create Space</button>
-            <a class="btn btn-elevated" href="/">Return Home</a>
+            <a class="btn btn-elevated" href="/logout">Log Out</a>
         </div>
     </header>
 
@@ -43,9 +43,6 @@
                 <div class="form-group">
                     <label>Space Password (Join Code)</label>
                     <div class="space-password-field">
-                        <span class="space-password-icon">
-                            <i class="fas fa-lock"></i>
-                        </span>
                         <input type="password" id="createSpaceCodeInput" name="code" class="space-password-input" placeholder="e.g. JHS2026" required autocomplete="new-password">
                         <button type="button" class="space-password-toggle" onclick="togglePasswordVis('createSpaceCodeInput', this)" aria-label="Toggle password visibility">
                             <i class="far fa-eye"></i>
@@ -82,7 +79,7 @@
             <form action="/admin/access-space" method="POST" class="space-access-form">
                 <div class="form-group">
                     <label class="space-access-label">Space Password</label>
-                    <div class="space-password-field">
+                    <div class="space-password-field has-icon">
                         <span class="space-password-icon">
                             <i class="fas fa-lock"></i>
                         </span>
@@ -127,9 +124,6 @@
                     <div class="form-group">
                         <label>Space Password (Join Code)</label>
                         <div class="space-password-field">
-                            <span class="space-password-icon">
-                                <i class="fas fa-lock"></i>
-                            </span>
                             <input type="password" id="editSpaceCodeInput" name="code" value="{{ admin_space.code }}" class="space-password-input" required autocomplete="new-password">
                             <button type="button" class="space-password-toggle" onclick="togglePasswordVis('editSpaceCodeInput', this)" aria-label="Toggle password visibility">
                                 <i class="far fa-eye"></i>

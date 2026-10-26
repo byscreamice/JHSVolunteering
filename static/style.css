@@ -414,50 +414,90 @@ header {
     align-items: center;
     width: 100%;
     background-color: var(--nest-white);
-    border: 1.5px solid var(--border-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .space-password-field:focus-within {
     border-color: var(--goldfinch-yellow);
     background-color: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(248, 220, 108, 0.35);
+    box-shadow: 0 0 0 2px rgba(248, 220, 108, 0.35);
 }
 
 .space-password-icon {
     position: absolute;
-    left: 14px;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--bark-gray);
-    font-size: 14px;
+    font-size: 15px;
     pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
+    transition: color 0.2s ease;
 }
 
-.space-password-input {
+.space-password-field:focus-within .space-password-icon {
+    color: var(--charcoal-wing);
+}
+
+.space-password-field.has-icon .space-password-input {
+    padding-left: 46px;
+}
+
+.space-password-field .space-password-input,
+.edit-form .space-password-field input,
+.space-gate-form .space-password-field input {
     width: 100%;
-    height: 48px;
-    padding: 12px 42px 12px 38px;
+    height: 42px;
+    min-height: 42px;
+    padding: 10px 40px 10px 12px;
     background: transparent;
     border: none;
+    outline: none;
     border-radius: 0;
-    font-size: 15px;
+    font-size: 14px;
     font-family: 'Google Sans', sans-serif;
     color: var(--charcoal-wing);
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     box-sizing: border-box;
+    box-shadow: none;
 }
 
-.space-password-input:focus {
+.space-password-field .space-password-input:focus,
+.edit-form .space-password-field input:focus,
+.space-gate-form .space-password-field input:focus {
     outline: none;
+    border: none;
+    box-shadow: none;
 }
 
-.space-password-input::placeholder {
+.space-password-field .space-password-input::placeholder {
     color: var(--bark-gray);
     opacity: 0.7;
-    letter-spacing: 0.2px;
+    letter-spacing: normal;
+}
+
+.space-gate-password-field {
+    background-color: var(--nest-white);
+    border: 1px solid var(--border-subtle);
+}
+
+.space-gate-password-field:focus-within {
+    background-color: #FFFFFF;
+}
+
+.space-gate-password-field .space-password-input {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    height: 46px;
+    min-height: 46px;
+    padding: 12px 42px 12px 42px;
+    letter-spacing: 1.5px;
 }
 
 .space-password-toggle {
@@ -805,9 +845,9 @@ dialog.admin-modal::backdrop {
     color: var(--charcoal-wing);
 }
 
-.edit-form .form-group input,
-.edit-form .form-group textarea,
-.edit-form .form-group select {
+.edit-form .form-group > input,
+.edit-form .form-group > textarea,
+.edit-form .form-group > select {
     width: 100%;
     padding: 10px 12px;
     min-height: 42px;
@@ -818,9 +858,9 @@ dialog.admin-modal::backdrop {
     color: var(--charcoal-wing);
 }
 
-.edit-form .form-group input:focus,
-.edit-form .form-group textarea:focus,
-.edit-form .form-group select:focus {
+.edit-form .form-group > input:focus,
+.edit-form .form-group > textarea:focus,
+.edit-form .form-group > select:focus {
     outline: none;
     border-color: var(--goldfinch-yellow);
     box-shadow: 0 0 0 2px rgba(248, 220, 108, 0.35);

@@ -68,7 +68,12 @@
                 <p class="space-gate-error"><i class="fas fa-exclamation-circle"></i> Invalid space code. Please check your code and try again.</p>
             {% endif %}
             <form action="/join-space" method="POST" class="space-gate-form">
-                <input type="text" name="code" placeholder="Enter Space Code (e.g. JHS2026)" required autocomplete="off" style="text-transform: uppercase;">
+                <div class="space-password-field space-gate-password-field">
+                    <input type="password" id="studentSpaceCode" name="code" class="space-password-input" placeholder="Enter Space Code (e.g. JHS2026)" required autocomplete="off">
+                    <button type="button" class="space-password-toggle" onclick="togglePasswordVis('studentSpaceCode', this)" aria-label="Toggle code privacy" title="Toggle privacy">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
                 <button type="submit" class="btn">Enter Space</button>
             </form>
         </div>
@@ -78,7 +83,6 @@
         <div class="space-banner-info">
             <span class="space-banner-label">Space:</span>
             <strong class="space-banner-name">{{ current_space.name }}</strong>
-            <span class="badge">{{ current_space.code }}</span>
         </div>
         <a href="/leave-space" class="btn-switch-space"><i class="fas fa-exchange-alt"></i> Switch Space</a>
     </div>
@@ -117,6 +121,17 @@
             } else {
                 el.style.display = 'none';
                 btn.textContent = 'View Description';
+            }
+        }
+        function togglePasswordVis(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="far fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="far fa-eye"></i>';
             }
         }
     </script>
