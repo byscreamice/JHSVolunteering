@@ -3,7 +3,7 @@ import base64
 import os
 import sqlite3
 from datetime import date
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, send_from_directory
 
 app = Flask(__name__)
 app.secret_key = "jhs_volunteering_secret_key"
@@ -104,6 +104,14 @@ def execute_db(query, params=(), fetch=False):
     cur.close()
     conn.close()
     return result
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, "static"), "favicon.ico", mimetype="image/vnd.microsoft.icon")
+
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory(os.path.join(app.root_path, "static"), "manifest.json", mimetype="application/manifest+json")
 
 @app.route("/")
 def home():
