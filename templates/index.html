@@ -24,11 +24,11 @@
             <h1>Goldfinch</h1>
         </div>
         <button class="btn btn-elevated" onclick="document.getElementById('loginModal').showModal()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E232A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             <span>Admin Sign In</span>
         </button>
     </header>
-    <p></p>
+
     <dialog id="loginModal">
         <div class="screen">
             <button type="button" class="modal-close-btn" onclick="document.getElementById('loginModal').close()" aria-label="Close">&times;</button>
@@ -55,6 +55,34 @@
             </div>		
         </div>
     </dialog>
+
+    {% if not current_space %}
+    <main class="space-gate-wrapper">
+        <div class="space-gate-card">
+            <div class="space-gate-icon">
+                <img src="/static/goldfinch_logo.png" alt="Goldfinch" class="space-gate-logo">
+            </div>
+            <h2>Join a Volunteering Space</h2>
+            <p class="space-gate-desc">Enter your school or organization space code to view volunteering opportunities.</p>
+            {% if request.args.get('space_error') == '1' %}
+                <p class="space-gate-error"><i class="fas fa-exclamation-circle"></i> Invalid space code. Please check your code and try again.</p>
+            {% endif %}
+            <form action="/join-space" method="POST" class="space-gate-form">
+                <input type="text" name="code" placeholder="Enter Space Code (e.g. JHS2026)" required autocomplete="off" style="text-transform: uppercase;">
+                <button type="submit" class="btn">Enter Space</button>
+            </form>
+        </div>
+    </main>
+    {% else %}
+    <div class="space-banner">
+        <div class="space-banner-info">
+            <span class="space-banner-label">Space:</span>
+            <strong class="space-banner-name">{{ current_space.name }}</strong>
+            <span class="badge">{{ current_space.code }}</span>
+        </div>
+        <a href="/leave-space" class="btn-switch-space"><i class="fas fa-exchange-alt"></i> Switch Space</a>
+    </div>
+
     <div class="grid">
     {% for opp in opportunities %}
     <div class="card">
@@ -70,14 +98,16 @@
             <p id="desc-{{ opp.id }}" style="display: none; margin: 12px 0;">{{ opp.description }}</p>
             <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 12px; flex-wrap: wrap;">
                 <button class="btn" type="button" onclick="toggleDescription('desc-{{ opp.id }}', this)">View Description</button>
-                <a class="btn" href="{{ opp.link }}" target="_blank">Sign Up Link</a>
+                <a class="btn" href="{{ opp.link }}" target="_blank" rel="noopener noreferrer">Sign Up Link</a>
             </div>
         </div>
     </div>
     {% else %}
-        <p style="grid-column: 1 / -1; text-align: center; font-size: 1.25rem; color: #656E77; padding: 40px 0;">No Volunteering Opportunities yet</p>
+        <p style="grid-column: 1 / -1; text-align: center; font-size: 1.15rem; color: #656E77; padding: 40px 0;">No Volunteering Opportunities in {{ current_space.name }} yet</p>
     {% endfor %}
     </div>
+    {% endif %}
+
     <script>
         function toggleDescription(id, btn) {
             const el = document.getElementById(id);

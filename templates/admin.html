@@ -23,16 +23,150 @@
             <img src="/static/goldfinch_logo.png" alt="Goldfinch Logo" class="header-logo">
             <h1>Admin Dashboard</h1>
         </div>
-        <a class="btn" href="/">Return Home</a>
+        <div class="header-actions">
+            <button type="button" class="btn" onclick="document.getElementById('createSpaceModal').showModal()">Create Space</button>
+            <a class="btn btn-elevated" href="/">Return Home</a>
+        </div>
     </header>
 
+    <dialog id="createSpaceModal" class="admin-modal">
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h3>Create a New Space</h3>
+                <button type="button" class="close-x-btn" onclick="document.getElementById('createSpaceModal').close()">&times;</button>
+            </div>
+            <form action="/spaces/add" method="POST" class="edit-form">
+                <div class="form-group">
+                    <label>Space Name</label>
+                    <input type="text" name="name" placeholder="e.g. Johnston High School" required>
+                </div>
+                <div class="form-group">
+                    <label>Space Password (Join Code)</label>
+                    <div class="space-password-field">
+                        <span class="space-password-icon">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="createSpaceCodeInput" name="code" class="space-password-input" placeholder="e.g. JHS2026" required autocomplete="new-password">
+                        <button type="button" class="space-password-toggle" onclick="togglePasswordVis('createSpaceCodeInput', this)" aria-label="Toggle password visibility">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="edit-modal-actions">
+                    <button type="button" class="btn" style="background-color: #656E77; color: #FFFFFF;" onclick="document.getElementById('createSpaceModal').close()">Cancel</button>
+                    <button type="submit" class="btn">Create Space</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
     <main class="admin-container">
+        {% if request.args.get('space_err') == 'exists' %}
+        <div class="admin-alert-error">
+            <i class="fas fa-exclamation-triangle"></i> A space with that code already exists. Please choose a different code.
+        </div>
+        {% endif %}
+        {% if request.args.get('access_err') == '1' %}
+        <div class="admin-alert-error">
+            <i class="fas fa-exclamation-circle"></i> Invalid space password. Please check your code and try again.
+        </div>
+        {% endif %}
+
+        {% if not admin_space %}
+        <div class="admin-card space-access-card">
+            <div class="space-access-logo-wrap">
+                <img src="/static/goldfinch_logo.png" alt="Goldfinch" class="space-access-logo">
+            </div>
+            <h2>Access & Edit Your Space</h2>
+            <p class="space-access-desc">Enter the space password you created for students to view, edit, and post opportunities for your space.</p>
+            <form action="/admin/access-space" method="POST" class="space-access-form">
+                <div class="form-group">
+                    <label class="space-access-label">Space Password</label>
+                    <div class="space-password-field">
+                        <span class="space-password-icon">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="spaceAccessInput" name="code" class="space-password-input" placeholder="Enter Space Password" required autocomplete="current-password">
+                        <button type="button" class="space-password-toggle" onclick="togglePasswordVis('spaceAccessInput', this)" aria-label="Toggle password visibility">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-access-submit">Access & Edit Space</button>
+            </form>
+        </div>
+        {% else %}
+
+        <div class="admin-card">
+            <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h2 style="margin: 0;">{{ admin_space.name }}</h2>
+                    <p style="margin: 6px 0 0 0; color: #656E77; font-size: 13px;">Manage opportunities and settings for this space</p>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button type="button" class="btn-edit" onclick="document.getElementById('editSpaceModal').showModal()" title="Edit Space Details">Edit Space</button>
+                    <a href="/admin/lock-space" class="btn" style="background-color: #656E77; color: #FFFFFF; padding: 6px 12px; font-size: 12px;">Switch Space</a>
+                    <form action="/spaces/delete/{{ admin_space.id }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this space and all opportunities inside it?');">
+                        <button type="submit" class="btn-delete" style="padding: 6px 12px; font-size: 12px;">Delete Space</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <dialog id="editSpaceModal" class="admin-modal">
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3>Edit Space Details</h3>
+                    <button type="button" class="close-x-btn" onclick="document.getElementById('editSpaceModal').close()">&times;</button>
+                </div>
+                <form action="/spaces/edit/{{ admin_space.id }}" method="POST" class="edit-form">
+                    <div class="form-group">
+                        <label>Space Name</label>
+                        <input type="text" name="name" value="{{ admin_space.name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Space Password (Join Code)</label>
+                        <div class="space-password-field">
+                            <span class="space-password-icon">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" id="editSpaceCodeInput" name="code" value="{{ admin_space.code }}" class="space-password-input" required autocomplete="new-password">
+                            <button type="button" class="space-password-toggle" onclick="togglePasswordVis('editSpaceCodeInput', this)" aria-label="Toggle password visibility">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="edit-modal-actions">
+                        <button type="button" class="btn" style="background-color: #656E77; color: #FFFFFF;" onclick="document.getElementById('editSpaceModal').close()">Cancel</button>
+                        <button type="submit" class="btn">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+
         <form class="admin-form" action="/add" method="POST" enctype="multipart/form-data">
             <h2>Create a new opportunity</h2>
-            <input type="text" name="title" placeholder="Event Title" required>
-            <input type="date" name="date" min="{{ today }}" required>
-            <input type="text" name="link" placeholder="Sign Up Link" required>
-            <textarea name="description" placeholder="Description" rows="3" required></textarea>
+            <input type="hidden" name="space_id" value="{{ admin_space.id }}">
+            <div class="form-group">
+                <label>Posting to Space</label>
+                <input type="text" value="{{ admin_space.name }}" disabled style="background-color: #F8F9FA; color: #1E232A; font-weight: 600;">
+            </div>
+            <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" name="title" placeholder="Event Title" required>
+            </div>
+            <div class="form-group">
+                <label>Event Date</label>
+                <input type="date" name="date" value="{{ today }}" min="{{ today }}" required>
+            </div>
+            <div class="form-group">
+                <label>Sign Up Link</label>
+                <input type="url" name="link" placeholder="https://..." required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Description" rows="3" required></textarea>
+            </div>
             <div class="form-group">
                 <label>Card Image (Optional)</label>
                 <input type="file" name="image_file" accept="image/*">
@@ -75,7 +209,7 @@
                             </td>
                             <td>
                                 <a class="table-link" href="{{ opp.link }}" target="_blank" rel="noopener noreferrer">
-                                    Visit Link <i class="fas fa-external-link-alt" style="font-size: 11px; margin-left: 2px;"></i>
+                                    Visit Link <i class="fas fa-external-link-alt" style="font-size: 11px; margin-left: 4px;"></i>
                                 </a>
                             </td>
                             <td style="text-align: right;">
@@ -93,6 +227,7 @@
                                             <button type="button" class="close-x-btn" onclick="document.getElementById('editModal-{{ opp.id }}').close()">&times;</button>
                                         </div>
                                         <form action="/edit/{{ opp.id }}" method="POST" enctype="multipart/form-data" class="edit-form">
+                                            <input type="hidden" name="space_id" value="{{ admin_space.id }}">
                                             <div class="form-group">
                                                 <label>Event Title</label>
                                                 <input type="text" name="title" value="{{ opp.title }}" required>
@@ -137,10 +272,24 @@
             {% else %}
             <div class="admin-empty-state">
                 <i class="far fa-folder-open" style="font-size: 40px; color: #656E77; margin-bottom: 12px;"></i>
-                <p style="color: #656E77; font-size: 14px; margin: 0;">Fill out the form above to post your first opportunity for students.</p>
+                <p style="color: #656E77; font-size: 14px; margin: 0;">Fill out the form above to post your first opportunity for students in {{ admin_space.name }}.</p>
             </div>
             {% endif %}
         </div>
+        {% endif %}
     </main>
+    <script>
+        function togglePasswordVis(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="far fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="far fa-eye"></i>';
+            }
+        }
+    </script>
 </body>
 </html>

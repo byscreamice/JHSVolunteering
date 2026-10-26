@@ -25,18 +25,32 @@ def init_db():
     conn = get_db()
     cur = conn.cursor()
     if DATABASE_URL:
-        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id SERIAL PRIMARY KEY, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS spaces (id SERIAL PRIMARY KEY, name TEXT NOT NULL, code TEXT NOT NULL UNIQUE)")
+        conn.commit()
+        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id SERIAL PRIMARY KEY, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT, space_id INTEGER)")
         conn.commit()
         try:
             cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS image TEXT")
             conn.commit()
         except Exception:
             conn.rollback()
+        try:
+            cur.execute("ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS space_id INTEGER")
+            conn.commit()
+        except Exception:
+            conn.rollback()
     else:
-        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT)")
+        cur.execute("CREATE TABLE IF NOT EXISTS spaces (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, code TEXT NOT NULL UNIQUE)")
+        conn.commit()
+        cur.execute("CREATE TABLE IF NOT EXISTS opportunities (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, date TEXT NOT NULL, link TEXT NOT NULL, description TEXT, image TEXT, space_id INTEGER)")
         conn.commit()
         try:
             cur.execute("ALTER TABLE opportunities ADD COLUMN image TEXT")
+            conn.commit()
+        except Exception:
+            pass
+        try:
+            cur.execute("ALTER TABLE opportunities ADD COLUMN space_id INTEGER")
             conn.commit()
         except Exception:
             pass
@@ -116,15 +130,127 @@ def manifest():
 @app.route("/")
 def home():
     execute_db("DELETE FROM opportunities WHERE date < ?", (str(date.today()),))
-    opportunities = execute_db("SELECT * FROM opportunities ORDER BY date ASC", fetch=True)
-    return render_template("index.html", opportunities=opportunities)
+    space_id = session.get("space_id")
+    current_space = None
+    if space_id:
+        rows = execute_db("SELECT * FROM spaces WHERE id = ?", (space_id,), fetch=True)
+        if rows:
+            current_space = rows[0]
+        else:
+            session.pop("space_id", None)
+    if current_space:
+        opportunities = execute_db(
+            "SELECT * FROM opportunities WHERE space_id = ? ORDER BY date ASC",
+            (current_space["id"],),
+            fetch=True
+        )
+    else:
+        opportunities = []
+    return render_template("index.html", opportunities=opportunities, current_space=current_space)
+
+@app.route("/join-space", methods=["POST"])
+def join_space():
+    code = request.form.get("code", "").strip().upper()
+    if not code:
+        return redirect("/?space_error=1")
+    rows = execute_db("SELECT * FROM spaces WHERE UPPER(code) = ?", (code,), fetch=True)
+    if rows:
+        session["space_id"] = rows[0]["id"]
+        return redirect("/")
+    return redirect("/?space_error=1")
+
+@app.route("/leave-space", methods=["GET", "POST"])
+def leave_space():
+    session.pop("space_id", None)
+    return redirect("/")
 
 @app.route("/admin")
 def admin():
     if not session.get("is_admin"):
         return redirect("/?error=auth")
-    opportunities = execute_db("SELECT * FROM opportunities ORDER BY date ASC", fetch=True)
-    return render_template("admin.html", opportunities=opportunities, today=date.today())
+    execute_db("DELETE FROM opportunities WHERE date < ?", (str(date.today()),))
+    admin_space_id = session.get("admin_space_id")
+    admin_space = None
+    if admin_space_id:
+        rows = execute_db("SELECT * FROM spaces WHERE id = ?", (admin_space_id,), fetch=True)
+        if rows:
+            admin_space = rows[0]
+        else:
+            session.pop("admin_space_id", None)
+    if admin_space:
+        opportunities = execute_db(
+            "SELECT * FROM opportunities WHERE space_id = ? ORDER BY date ASC",
+            (admin_space["id"],),
+            fetch=True
+        )
+    else:
+        opportunities = []
+    return render_template(
+        "admin.html",
+        admin_space=admin_space,
+        opportunities=opportunities,
+        today=date.today()
+    )
+
+@app.route("/admin/access-space", methods=["POST"])
+def admin_access_space():
+    if not session.get("is_admin"):
+        return redirect("/?error=auth")
+    code = request.form.get("code", "").strip().upper()
+    if not code:
+        return redirect("/admin?access_err=1")
+    rows = execute_db("SELECT * FROM spaces WHERE UPPER(code) = ?", (code,), fetch=True)
+    if rows:
+        session["admin_space_id"] = rows[0]["id"]
+        return redirect("/admin")
+    return redirect("/admin?access_err=1")
+
+@app.route("/admin/lock-space")
+def admin_lock_space():
+    session.pop("admin_space_id", None)
+    return redirect("/admin")
+
+@app.route("/spaces/add", methods=["POST"])
+def add_space():
+    if not session.get("is_admin"):
+        return redirect("/?error=auth")
+    name = request.form.get("name", "").strip()
+    code = request.form.get("code", "").strip().upper()
+    if name and code:
+        existing = execute_db("SELECT id FROM spaces WHERE UPPER(code) = ?", (code,), fetch=True)
+        if existing:
+            return redirect("/admin?space_err=exists")
+        execute_db("INSERT INTO spaces (name, code) VALUES (?, ?)", (name, code))
+        new_row = execute_db("SELECT id FROM spaces WHERE UPPER(code) = ?", (code,), fetch=True)
+        if new_row:
+            session["admin_space_id"] = new_row[0]["id"]
+    return redirect("/admin")
+
+@app.route("/spaces/edit/<int:id>", methods=["POST"])
+def edit_space(id):
+    if not session.get("is_admin"):
+        return redirect("/?error=auth")
+    name = request.form.get("name", "").strip()
+    code = request.form.get("code", "").strip().upper()
+    if name and code:
+        existing = execute_db("SELECT id FROM spaces WHERE UPPER(code) = ? AND id != ?", (code, id), fetch=True)
+        if existing:
+            return redirect("/admin?space_err=exists")
+        execute_db("UPDATE spaces SET name = ?, code = ? WHERE id = ?", (name, code, id))
+        session["admin_space_id"] = id
+    return redirect("/admin")
+
+@app.route("/spaces/delete/<int:id>", methods=["POST"])
+def delete_space(id):
+    if not session.get("is_admin"):
+        return redirect("/?error=auth")
+    execute_db("DELETE FROM opportunities WHERE space_id = ?", (id,))
+    execute_db("DELETE FROM spaces WHERE id = ?", (id,))
+    if session.get("admin_space_id") == id:
+        session.pop("admin_space_id", None)
+    if session.get("space_id") == id:
+        session.pop("space_id", None)
+    return redirect("/admin")
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -137,6 +263,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("is_admin", None)
+    session.pop("admin_space_id", None)
     return redirect("/")
 
 @app.route("/add", methods=["POST"])
@@ -147,10 +274,12 @@ def add():
     date_val = request.form["date"]
     link = request.form["link"]
     description = request.form["description"]
+    space_id_raw = request.form.get("space_id", "").strip()
+    space_id = int(space_id_raw) if space_id_raw.isdigit() else session.get("admin_space_id")
     image_data = process_image(request)
     execute_db(
-        "INSERT INTO opportunities (title, date, link, description, image) VALUES (?, ?, ?, ?, ?)",
-        (title, date_val, link, description, image_data)
+        "INSERT INTO opportunities (title, date, link, description, image, space_id) VALUES (?, ?, ?, ?, ?, ?)",
+        (title, date_val, link, description, image_data, space_id)
     )
     return redirect("/admin")
 
@@ -169,9 +298,16 @@ def edit(id):
     date_val = request.form["date"]
     link = request.form["link"]
     description = request.form["description"]
+    space_id_raw = request.form.get("space_id", "").strip()
+    if space_id_raw.isdigit():
+        space_id = int(space_id_raw)
+    else:
+        space_id = session.get("admin_space_id")
     
-    existing = execute_db("SELECT image FROM opportunities WHERE id = ?", (id,), fetch=True)
+    existing = execute_db("SELECT image, space_id FROM opportunities WHERE id = ?", (id,), fetch=True)
     current_image = existing[0]["image"] if existing and existing[0]["image"] else ""
+    if space_id is None and existing and existing[0]["space_id"]:
+        space_id = existing[0]["space_id"]
 
     if request.form.get("remove_image") == "1":
         image_data = ""
@@ -183,7 +319,7 @@ def edit(id):
             image_data = current_image
 
     execute_db(
-        "UPDATE opportunities SET title = ?, date = ?, link = ?, description = ?, image = ? WHERE id = ?",
-        (title, date_val, link, description, image_data, id)
+        "UPDATE opportunities SET title = ?, date = ?, link = ?, description = ?, image = ?, space_id = ? WHERE id = ?",
+        (title, date_val, link, description, image_data, space_id, id)
     )
     return redirect("/admin")
