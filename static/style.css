@@ -556,6 +556,8 @@ header {
     flex-direction: column;
     gap: 6px;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .admin-form .form-group label {
@@ -569,6 +571,7 @@ header {
 .admin-form select {
     width: 100%;
     max-width: 100%;
+    min-width: 0;
     padding: 11px 12px;
     min-height: 44px;
     border: 1px solid var(--border-subtle);
@@ -577,7 +580,33 @@ header {
     font-family: 'Google Sans', sans-serif;
     color: var(--charcoal-wing);
     background-color: #FFFFFF;
+    box-sizing: border-box;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="date"] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    display: block;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #FFFFFF;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+    min-height: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    opacity: 0.8;
 }
 
 .admin-form input:focus,
@@ -837,6 +866,9 @@ dialog.admin-modal::backdrop {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 }
 
 .edit-form .form-group label {
@@ -849,6 +881,8 @@ dialog.admin-modal::backdrop {
 .edit-form .form-group > textarea,
 .edit-form .form-group > select {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     padding: 10px 12px;
     min-height: 42px;
     border: 1px solid var(--border-subtle);
@@ -856,6 +890,7 @@ dialog.admin-modal::backdrop {
     font-size: 14px;
     font-family: 'Google Sans', sans-serif;
     color: var(--charcoal-wing);
+    box-sizing: border-box;
 }
 
 .edit-form .form-group > input:focus,
@@ -1125,5 +1160,15 @@ dialog#loginModal::backdrop {
 
     .admin-card-header {
         padding: 14px 16px;
+    }
+
+    .admin-form input,
+    .admin-form textarea,
+    .admin-form select,
+    .edit-form .form-group > input,
+    .edit-form .form-group > textarea,
+    .edit-form .form-group > select,
+    input[type="date"] {
+        font-size: 16px;
     }
 }
