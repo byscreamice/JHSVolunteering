@@ -211,6 +211,74 @@ header {
     background: #ffffff;
 }
 
+.admin-form input[type="file"],
+.edit-form input[type="file"] {
+    padding: 8px;
+    border: 1px dashed #cbd5e1;
+    background-color: var(--nest-white);
+    color: var(--bark-gray);
+    font-size: 13px;
+    cursor: pointer;
+    line-height: 1.5;
+}
+
+.admin-form input[type="file"]:hover,
+.edit-form input[type="file"]:hover {
+    border-color: var(--goldfinch-yellow);
+    background-color: #ffffff;
+}
+
+.admin-form input[type="file"]:focus,
+.edit-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--goldfinch-yellow);
+    box-shadow: 0 0 0 2px rgba(248, 220, 108, 0.35);
+}
+
+.admin-form input[type="file"]::file-selector-button,
+.edit-form input[type="file"]::file-selector-button {
+    background-color: var(--goldfinch-yellow);
+    color: var(--charcoal-wing);
+    border: 1px solid var(--charcoal-wing);
+    padding: 8px 16px;
+    margin-right: 14px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 0;
+    box-shadow: 0 1px 2px rgba(30, 35, 42, 0.1);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-form input[type="file"]::file-selector-button:hover,
+.edit-form input[type="file"]::file-selector-button:hover {
+    background-color: var(--thistle-sun);
+    color: var(--charcoal-wing);
+}
+
+.admin-form input[type="file"]::-webkit-file-upload-button,
+.edit-form input[type="file"]::-webkit-file-upload-button {
+    background-color: var(--goldfinch-yellow);
+    color: var(--charcoal-wing);
+    border: 1px solid var(--charcoal-wing);
+    padding: 8px 16px;
+    margin-right: 14px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 0;
+    box-shadow: 0 1px 2px rgba(30, 35, 42, 0.1);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.admin-form input[type="file"]::-webkit-file-upload-button:hover,
+.edit-form input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: var(--thistle-sun);
+    color: var(--charcoal-wing);
+}
+
 .admin-card {
     background: var(--card-bg);
     border-radius: 0;
